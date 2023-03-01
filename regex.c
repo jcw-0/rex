@@ -14,12 +14,13 @@
 #define LOOKBEHIND  1<<1
 #define LOOKAHEAD   1<<2
 
-/* matchmultipliers */
+/* match multipliers */
 #define MM_NONE          0 /* this is equivalent to negating */
 #define MM_NONEORONCE   -1
 #define MM_ONCEORMORE   -2
 #define MM_ANYNONGREEDY -3
 #define MM_ANY          -4
+
 
 typedef struct subexpr_t {
     uint8_t* data;
@@ -31,20 +32,49 @@ typedef struct subexpr_t {
 } subexpr_t;
 
 
-
-const subexpr_t e_def = {
-        .data = NULL,
-        .flags = 0,
-        .fflags = 0,
-        .n_matches = 0,
-        .n_subexpr = 0,
-        .subexpr = NULL
+static const subexpr_t e_def = {
+    .data = NULL,
+    .flags = 0,
+    .fflags = 0,
+    .n_matches = 0,
+    .n_subexpr = 0,
+    .subexpr = NULL
 };
 
+/* splits the regular expression into subexpressions with set flags */
+static void tokenize(subexpr_t*, uint8_t*);
+    
 void error_and_die(char* errmsg, uint8_t* expr) {
-    /* TODO: give valuable error message through referencing given index in regular expression */
+    /* TODO: give valuable error message through using sensible error codes and referencing index of problematic expression */
     printf("%s\n", errmsg);
-    exit 1;
+    exit(1);
+}
+    
+void cleanup(void) {
+    while (n_allocated--) free(allocated[n_allocated]);
+}
+
+int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
+    
+    atexit(cleanup);
+    
+    subexpr_t* e = malloc(sizeof (subexpr_t*) * MAXSUBEXPR);
+    tokenize(e, expression);
+    
+    // match(e, text);
+    // if (substitute)
+    //    substitute();
+    
+    free(e);
+    return 0;
+}
+
+static int n_allocated = 0;
+static subexpr_t allocated[512];
+static inline void create_subexpression(subexpr_t* e) {
+    allocated[n_allocated] = malloc(sizeof (subexpr_t));
+    (e->childsubexpr + e->n_childsubexpr) = allocated[n_allocated++];
+    e->n_childsubexpr++;
 }
 
 static inline void parse_num_of_matches(subexpr_t* e, uint8_t* expr) {
@@ -76,14 +106,6 @@ static inline void parse_num_of_matches(subexpr_t* e, uint8_t* expr) {
     expression++;
 }
 
-int n_allocated = 0;
-subexpr_t allocated[512];
-static inline void create_subexpression(subexpr_t* e) {
-    allocated[n_allocated] = malloc(sizeof (subexpr_t));
-    (e->childsubexpr + e->n_childsubexpr) = allocated[n_allocated++];
-    e->n_childsubexpr++;
-}
-
 static void tokenize(subexpr_t* e, uint8_t* expression) {
 
     *e = e_def;
@@ -93,7 +115,7 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
             case '(':
                 if (e->flags & CLASS) error_and_die("error: cannot use (group) in [class]", expression);
 
-                /* change the char to null-char for easy parsing when reading our subexpressions in future functions 
+                /* change the char to null-char for easy parsing when reading our subexpressions in the match function 
                  * this will be done each time a new subexpr starts and ends (except for when parsing alphanumericals as they
                  * are each to be parsed one by one) */
                 *expression = '\0'; expression++;
@@ -136,16 +158,4 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
         }
     }
     return;
-}
-
-int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
-
-    subexpr_t* e = malloc(sizeof (subexpr_t*) * MAXSUBEXPR);
-    tokenize(e, expression);
-    // match(e, text);
-    // if (substitute)
-    //    substitute();
-    free(e);
-
-    return 0;
 }
