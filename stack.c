@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef struct stack_t {
+typedef struct {
   void* bot;
   void* top;
   void* current;
