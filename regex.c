@@ -22,7 +22,7 @@
 #define MM_ANY          -4
 
 
-typedef struct subexpr_t {
+typedef struct {
     uint8_t* data;
     uint8_t flags;
     uint8_t fflags;
