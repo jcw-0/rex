@@ -10,7 +10,7 @@ typedef struct stack_t {
 
 stack_t* stack_create(int indices, size_t databsz) {
   stack_t* s = malloc(sizeof (stack_t) + indices * databsz);
-  s->bot     = ((uint8_t*)s) + sizeof (stack_t);
+  s->bot     = s + 1;
   s->top     = ((uint8_t*)s->bot) + indices * databsz;
   s->current = s->bot;
   s->databsz = databsz;
