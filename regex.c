@@ -94,7 +94,8 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
                 if (e->flags & CLASS) error_and_die("error: cannot use (group) in [class]", expression);
 
                 /* change the char to null-char for easy parsing when reading our subexpressions in future functions 
-                 * this will be done each time a new subexpr starts and ends */
+                 * this will be done each time a new subexpr starts and ends (except for when parsing alphanumericals as they
+                 * are each parsed one by one (is that sane?)) */
                 *expression = '\0'; expression++;
 
                 create_subexpression(e);
