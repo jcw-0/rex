@@ -28,7 +28,7 @@ typedef struct subexpr_t {
     uint8_t fflags;
     int16_t n_matches;
     int n_childsubexpr;
-    struct expr_t* childsubexpr[MAXEXPR];
+    subexpr_t* childsubexpr[MAXSUBEXPR];
 } subexpr_t;
 
 
@@ -47,17 +47,17 @@ static void tokenize(subexpr_t*, uint8_t*);
 void error_and_die(char* errmsg, uint8_t* expr) {
     /* TODO: give valuable error message through using sensible error codes and referencing index of problematic expression */
     printf("%s\n", errmsg);
-    exit(1);
+    exit(-1);
 }
-    
+
+static int n_allocated = 0;
+static void allocated[512];
 void cleanup(void) {
-    while (n_allocated--) free(allocated[n_allocated]);
+    while (0 < n_allocated) free(allocated[--n_allocated]);
 }
 
 int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
-    
     atexit(cleanup);
-    
     subexpr_t* e = malloc(sizeof (subexpr_t*) * MAXSUBEXPR);
     tokenize(e, expression);
     
@@ -69,8 +69,6 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
     return 0;
 }
 
-static int n_allocated = 0;
-static subexpr_t allocated[512];
 static inline void create_subexpression(subexpr_t* e) {
     allocated[n_allocated] = malloc(sizeof (subexpr_t));
     (e->childsubexpr + e->n_childsubexpr) = allocated[n_allocated++];
