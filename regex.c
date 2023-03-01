@@ -42,7 +42,7 @@ const subexpr_t e_def = {
 };
 
 void error_and_die(char* errmsg, uint8_t* expr) {
-    /* TODO: give valuable error message through referencing given regular expression */
+    /* TODO: give valuable error message through referencing given index in regular expression */
     printf("%s\n", errmsg);
     exit 1;
 }
@@ -95,7 +95,7 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
 
                 /* change the char to null-char for easy parsing when reading our subexpressions in future functions 
                  * this will be done each time a new subexpr starts and ends (except for when parsing alphanumericals as they
-                 * are each parsed one by one (is that sane?)) */
+                 * are each to be parsed one by one) */
                 *expression = '\0'; expression++;
 
                 create_subexpression(e);
@@ -147,10 +147,5 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
     //    substitute();
     free(e);
 
-    return 0;
-}
-
-int main(void) {
-    regex("\\((?>))", NULL, NULL);
     return 0;
 }
