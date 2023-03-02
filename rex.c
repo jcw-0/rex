@@ -104,6 +104,9 @@ static inline int parse_match_multiplier(uint8_t* e) {
             if (*(++e) == '?') { ++e; return MM_ANYNONGREEDY; }
             else { ++e; return MM_ANY; }
         break;
+		    
+	/* casts the integer inbetween the squiggly brackets "{n}" to an integer and 
+	 * uses it as a match multiplier */
         case '{':
             int n = 1, mul = 1, i = 1, accumulator = 0;
             *e++;
@@ -112,6 +115,7 @@ static inline int parse_match_multiplier(uint8_t* e) {
 	    ++e; 
 	    return accumulator;
         break;
+	/* if no match multiplier is declared, use 1 */
         default:
             return = 1;
         return;
