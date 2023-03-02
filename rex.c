@@ -92,25 +92,27 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 static inline int parse_match_multiplier(uint8_t* e) {
     switch (*e) {
         case '+':
+	    ++e;
             return MM_ONCEORMORE;
         break;
         case '?':
+	    ++e;
             return MM_NONEORONCE;
         break;
         case '*':
-            if (*(e + 1) == '?') { ++e; return MM_ANYNONGREEDY; }
-            else return MM_ANY;
+            if (*(++e) == '?') { ++e; return MM_ANYNONGREEDY; }
+            else { ++e; return MM_ANY; }
         break;
         case '{':
             int n = 1, mul = 1, i = 1, accumulator = 0;
             *e++;
             while (*e != '}') { e++; n++; }
             while (0 < (n--)) { accumulator += (*(e - (i++)) ^ '0') * mul; mul *= 10; } 
-		return accumulator;
+	    ++e; 
+	    return accumulator;
         break;
         default:
             return = 1;
         return;
     }
-    ++e;
 }
