@@ -29,11 +29,10 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
     uint8_t flags 	= 0;
     uint8_t modflags 	= 0;
 
-    /* pointer to a index in the expression-string for easy jumping back after recursively 
+    /* pointer to an index in the expression-string to easily jump back after recursively 
      * parsing subexpressions (those surrounded by parentheses--groups and functions) */
     uint8_t* e_before_jump = NULL;
-	
-    start_parse_loop:
+
     while (!has_failed) {
         switch (*e) {
 	    case ' ':
@@ -51,13 +50,16 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		e_before_jump = e;
 		if (!0 == match(e, input, output)) 
 		    has_failed = true;
-	    break;
-	    case '?':
-		if (is_function) 
+	    break; 
+			
+	    /* pattern of subexpression found in text, return to go back to the previous function stack frame */
 	    case ')':
 		++e;
-		return 0;
-	    case '':
+	    return 0;
+			
+	    /* character classes; "a-z" "A-Z" "A-z" "0-9" */
+	    case '[':
+		
 	    break;
 	    case '\\':
 		++e;
@@ -69,10 +71,11 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		has_failed = (negated)? !has_failed: has_failed;
 	    break;
 	}
-		
+
 	has_failed = (negated)? !has_failed: has_failed;
 	has_failed = (has_failed && *(++e) == '|')? false: true;
-		
+	
+	 /* code to handle match multipliers--moving the expression pointer and changing the "has_failed" bool accordingly */
 	int match_mul = parse_match_multiplier(e);
 	switch (match_mul) {
 	    case 0:
@@ -82,8 +85,19 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		if (!has_failed) e = e_before_subexpr;
 	    break;
 	    case MM_NONEORONCE:
-		goto start_parse_loop;
+	        has_failed = false;
+	    break;
 	    case MM_ONCEORMORE:
+		bool first = true;
+		if (first && has_failed) return -1;
+		else if (first) first = false;
+		else if (has_failed) break;
+	    break;
+	    case MM_ANYNONGREEDY:
+	    break;
+	    case MM_ANY:
+	    break;
+	    default:
 	    break;
 	}
     }
