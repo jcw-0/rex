@@ -98,7 +98,7 @@ static inline int parse_match_multiplier(uint8_t* e) {
             return MM_NONEORONCE;
         break;
         case '*':
-            if (*(e + 1) == '?') return MM_ANYNONGREEDY;
+            if (*(e + 1) == '?') { ++e; return MM_ANYNONGREEDY; }
             else return MM_ANY;
         break;
         case '{':
@@ -107,13 +107,13 @@ static inline int parse_match_multiplier(uint8_t* e) {
             *e++;
             while (*e != '}') { e++; n++; }
             int i = 1;
-			int accumulator = 0;
+	    int accumulator = 0;
             while (0 < (n--)) { accumulator += (*(e - (i++)) ^ '0') * mul; mul *= 10; } 
-			return accumulator;
+		return accumulator;
         break;
         default:
             return = 1;
         return;
     }
-    expression++;
+    ++e;
 }
