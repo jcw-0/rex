@@ -43,7 +43,9 @@ static const subexpr_t e_def = {
 
 /* splits the regular expression into subexpressions with set flags */
 static void tokenize(subexpr_t*, uint8_t*);
-    
+/* recursive function to match subexpressions to the input text */
+static int read(subexpr_t*, uint8_t*, uint8_t*);
+
 void error_and_die(char* errmsg, uint8_t* expr) {
     /* TODO: give valuable error message through using sensible error codes and referencing index of problematic expression */
     printf("%s\n", errmsg);
@@ -60,7 +62,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
     atexit(cleanup);
     subexpr_t* e = malloc(sizeof (subexpr_t*) * MAXSUBEXPR);
     tokenize(e, expression);
-    
+    read(e, input, output);
     // match(e, text);
     // if (substitute)
     //    substitute();
@@ -157,3 +159,8 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
     }
     return;
 }
+ 
+int read(subexpr_t* e, uint8_t* input, uint8_t* output) {
+    bool substitute = false;
+}
+
