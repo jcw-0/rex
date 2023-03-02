@@ -102,12 +102,9 @@ static inline int parse_match_multiplier(uint8_t* e) {
             else return MM_ANY;
         break;
         case '{':
-            int n = 1;
-            int mul = 1;
+            int n = 1, mul = 1, i = 1, accumulator = 0;
             *e++;
             while (*e != '}') { e++; n++; }
-            int i = 1;
-	    int accumulator = 0;
             while (0 < (n--)) { accumulator += (*(e - (i++)) ^ '0') * mul; mul *= 10; } 
 		return accumulator;
         break;
