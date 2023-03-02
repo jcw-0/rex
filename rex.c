@@ -14,7 +14,10 @@
 static inline void parse_match_multiplier(uint8_t* e);
 
 int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
+    
+    /* make a new pointer to each input to allow pointer arithmetic without messing with passed in pointers */
     uint8_t* e = expression, in = input, out = output;
+
     return match(e, in, out);
 }
 
@@ -25,7 +28,9 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
     bool negated 	= false;
     uint8_t flags 	= 0;
     uint8_t modflags 	= 0;
-	
+
+    /* pointer to a index in the expression-string for easy jumping back after recursively 
+     * parsing subexpressions (those surrounded by parentheses--groups and functions) */
     uint8_t* e_before_jump = NULL;
 	
     start_parse_loop:
@@ -45,8 +50,7 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		if (++e == '?') 
 		e_before_jump = e;
 		if (!0 == match(e, input, output)) 
-		    if (*e != '|') 
-			has_failed = true;
+		    has_failed = true;
 	    break;
 	    case '?':
 		if (is_function) 
@@ -57,7 +61,7 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 	    break;
 	    case '\\':
 		++e;
-		if (*e == 'n') { has_failed = ('\n' == *in)? false: true; ++e; }
+		if 	(*e == 'n') { has_failed = ('\n' == *in)? false: true; ++e; }
 		else if (*e == 't') { has_failed = ('\t' == *in)? false: true; ++e; }
 		else if (*e == 's') { has_failed = (' '  == *in || '\t' == *in)? false: true; ++e; }
 	    default:
