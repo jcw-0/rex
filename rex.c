@@ -71,9 +71,9 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		has_failed = (negated)? !has_failed: has_failed;
 	    break;
 	}
-
+	++e;
 	has_failed = (negated)? !has_failed: has_failed;
-	has_failed = (has_failed && *(++e) == '|')? false: true;
+	has_failed = (has_failed && *e == '|')? false: true;
 	
 	 /* code to handle match multipliers--moving the expression pointer and changing the "has_failed" bool accordingly */
 	int match_mul = parse_match_multiplier(e);
