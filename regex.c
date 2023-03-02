@@ -38,7 +38,7 @@ static const subexpr_t e_def = {
     .fflags = 0,
     .n_matches = 0,
     .n_subexpr = 0,
-    .subexpr = NULL
+    .childsubexpr = NULL
 };
 
 /* splits the regular expression into subexpressions with set flags */
