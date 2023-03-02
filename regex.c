@@ -75,7 +75,7 @@ static inline void create_subexpression(subexpr_t* e) {
     e->n_childsubexpr++;
 }
 
-static inline void parse_match_multiplier(subexpr_t* e, uint8_t* expr) {
+static inline void parse_match_multiplier(subexpr_t* e, uint8_t* expression) {
     switch (*expression) {
         case '+':
             e->n_matches |= MM_ONCEORMORE;
