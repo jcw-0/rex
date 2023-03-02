@@ -75,7 +75,7 @@ static inline void create_subexpression(subexpr_t* e) {
     e->n_childsubexpr++;
 }
 
-static inline void parse_num_of_matches(subexpr_t* e, uint8_t* expr) {
+static inline void parse_match_multiplier(subexpr_t* e, uint8_t* expr) {
     switch (*expression) {
         case '+':
             e->n_matches |= MM_ONCEORMORE;
@@ -92,7 +92,7 @@ static inline void parse_num_of_matches(subexpr_t* e, uint8_t* expr) {
             int mul = 1;
             *expression++;
             while (*expression != '}') { expression++; n++; }
-            int n = 1;
+            int i = 1;
             while (0 < (n--)) {
                 e->n_matches += (*(expression - (i++)) ^ '0') * mul; mul *= 10;
             }
@@ -148,10 +148,10 @@ static void tokenize(subexpr_t* e, uint8_t* expression) {
             return;
             case '\\':
                 expression++;
-                parse_num_of_matches(e, expression);    
+                /* variable referencing "\[int]" (and \[string]?) */
+                parse_match_multiplier(e, expression);    
             default:
-                expression++;
-                parse_num_of_matches(e, expression);    
+                expression++;    
             break;
         }
     }
