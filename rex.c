@@ -14,8 +14,8 @@
 static inline void parse_match_multiplier(uint8_t* e);
 
 int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
-	uint8_t* e = expression, in = input, out = output;
-	return match(e, in, out);
+    uint8_t* e = expression, in = input, out = output;
+    return match(e, in, out);
 }
 
 static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
