@@ -25,7 +25,7 @@ void stack_push(stack_t* s, void* data) {
 
 void* stack_pop(stack_t* s) {
   if (s->current == s->bot) return;
-  ((char*)s->current) -= s->databsz;
+  ((uint8_t*)s->current) -= s->databsz;
   return (s->current + s->databsz)
 }
 
