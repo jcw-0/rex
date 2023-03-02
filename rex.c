@@ -66,6 +66,7 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		else if (*e == 's') { has_failed = (' '  == *in || '\t' == *in)? false: true; ++e; }
 	    default:
 		has_failed = (*e == *in)? false: true;
+		has_failed = (negated)? !has_failed: has_failed;
 	    break;
 	}
 		
