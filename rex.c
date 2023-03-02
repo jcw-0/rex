@@ -28,7 +28,9 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
     bool negated 	= false;
     uint8_t flags 	= 0;
     uint8_t modflags 	= 0;
-
+    /* since expression is always (tried to be) matched once before the multiplier is checked, initialize to 1 */
+    int match_counter   = 1;
+	
     /* pointer to an index in the expression-string to easily jump back after recursively 
      * parsing subexpressions (those surrounded by parentheses--groups and functions) */
     uint8_t* e_before_jump = NULL;
@@ -37,11 +39,11 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
         switch (*e) {
 	    case ' ':
 		e++;
-	    break;
+	    	break;
 	    case '!':
 		negated = !negated;
 		e++;
-	    break;
+	    	break;
 			
 	    /* handle all expressions inside parentheses as subexpressions,
 	     * parse their content recursively */
@@ -50,17 +52,17 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		e_before_jump = e;
 		if (!0 == match(e, input, output)) 
 		    has_failed = true;
-	    break; 
+	    	break; 
 			
 	    /* pattern of subexpression found in text, return to go back to the previous function stack frame */
 	    case ')':
 		++e;
-	    return 0;
+	    	return 0;
 			
 	    /* character classes; "a-z" "A-Z" "A-z" "0-9" */
 	    case '[':
 		
-	    break;
+	    	break;
 	    case '\\':
 		++e;
 		if 	(*e == 'n') { has_failed = ('\n' == *in)? false: true; ++e; }
@@ -69,7 +71,6 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 	    default:
 		has_failed = (*e == *in)? false: true;
 		has_failed = (negated)? !has_failed: has_failed;
-	    break;
 	}
 	++e;
 	has_failed = (negated)? !has_failed: has_failed;
@@ -83,22 +84,22 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 		else negated = true;
 				
 		if (!has_failed) e = e_before_subexpr;
-	    break;
+	    	break;
 	    case MM_NONEORONCE:
 	        has_failed = false;
-	    break;
+	    	break;
 	    case MM_ONCEORMORE:
-		bool first = true;
-		if (first && has_failed) return -1;
-		else if (first) first = false;
+		
+		if (1 == match_counter && has_failed) 
+		    if (!negated) return -1;
+		else if (1 == match_counter)
 		else if (has_failed) break;
-	    break;
+	    	break;
 	    case MM_ANYNONGREEDY:
-	    break;
+	    	break;
 	    case MM_ANY:
-	    break;
+	    	break;
 	    default:
-	    break;
 	}
     }
     return 0;
