@@ -51,6 +51,7 @@ static int match(uint8_t* e, uint8_t* in, uint8_t* out) {
 	    case '?':
 		if (is_function) 
 	    case ')':
+		++e;
 		return 0;
 	    case '':
 	    break;
