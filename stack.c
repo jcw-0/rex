@@ -23,10 +23,10 @@ void stack_push(stack_t* s, void* data) {
   ((uint8_t*)s->current) + s->databsz;
 }
 
-uint8_t* stack_pop(stack_t* s) {
+void* stack_pop(stack_t* s) {
   if (s->current == s->bot) return;
-  ((char*)s->current) - s->databsz;
-  return ((uint8_t*)s->current + s->databsz)
+  ((char*)s->current) -= s->databsz;
+  return (s->current + s->databsz)
 }
 
 void stack_free(stack_t* s) {
