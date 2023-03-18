@@ -37,7 +37,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
     uint8_t flags 	= 0;
     uint8_t modflags 	= 0;
     int match_counter   = 1;
-    char delimiter 	= '\0';
+    char delimiter; delimiter = '/';
 
 
     /* parse expression flags, such as modifier flags and mode (match / substitute).
@@ -50,10 +50,10 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
          * as delimiter */
    	    switch (*e) {
 	        
-            case  ' '     :
-	        case '\t'     : ++e; goto parse_flag_loop;
-            case 's'      : substitute = true; ++e;
-	        case delimiter: ++e;
+            	case  ' '     :
+	    	case '\t'     : ++e; goto parse_flag_loop;
+            	case 's'      : substitute = true; ++e;
+	    	case delimiter: ++e;
 	        default       : if (first) { delimiter = *e; ++e; }
 	    }
     }
@@ -65,7 +65,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
      *  escaped characters "\[alphanumerical]"*/
     parse_expr_loop:
     	if (!first) ++in;
-	    first = false;
+	first = false;
     p_e_loop_no_input_inc:
         switch (*(++e)) {
             
