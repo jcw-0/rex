@@ -84,7 +84,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
             /* pattern of subexpression found in text, return to go back to 
              * the previous function stack frame */
             case ')':
-        	    ++e;
+        	++e;
                 return 0;
 
             /* character classes; "a-z" "A-Z" "A-z" "0-9" */
