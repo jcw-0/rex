@@ -58,6 +58,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
 	    }
     }
 
+
     /* program-loop; iterated for each character in the expression (exceptions 
      * exist where multiple characters
      * could be thought of as one, e.g: 
@@ -68,19 +69,19 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
 	first = false;
     p_e_loop_no_input_inc:
         switch (*(++e)) {
-            
-            case delimiter:                 ++e; goto parse_flag_loop
+
+            case delimiter:                 			   ++e; goto parse_flag_loop
             case  ' ':
-	    case '\t':                           goto parse_expr_loop; 
-            case '!': 	     negated = !negated; goto p_e_loop_no_input_inc;
-        		
+	    case '\t':                           			goto parse_expr_loop; 
+            case '!': 	     			    negated = !negated; goto p_e_loop_no_input_inc;
+
             /* handle all expressions inside parentheses as subexpressions,
              * parse their content recursively */
             case '(':
-        	    if (++e == '?')              goto sbrt;
-        	    if (!0 == regex(e, in, out)) goto has_failed;
-		    else 			 goto parse_expr_loop;
-            
+        	if (++e == '?')              				goto sbrt;
+        	if (!0 == regex(e, in, out)) 				goto has_failed;
+		else 			 				goto parse_expr_loop;
+
             /* pattern of subexpression found in text, return to go back to 
              * the previous function stack frame */
             case ')':
@@ -90,21 +91,18 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
             /* character classes; "a-z" "A-Z" "A-z" "0-9" */
             case '[':
                 return 0;
-            
+
             /* expression was successfully matched, return to calling code */	
-	        case '\0':
-    		    return 0;
-
+	    case '\0':
+    		return 0;
             case '\\':
-        	    ++e;
-        	    if (*e == 'n' && *in == '\n') 			goto parse_expr_loop;
-        	    else if (*e == 't' && *in == '\t') 			goto parse_expr_loop;
-        	    else if (*e == 's' && (*in == ' ' || *in == '\t')) 	goto parse_expr_loop;  
+        	++e;
+        	if (*e == 'n' && *in == '\n') 				goto parse_expr_loop;
+        	else if (*e == 't' && *in == '\t') 			goto parse_expr_loop;
+        	else if (*e == 's' && (*in == ' ' || *in == '\t')) 	goto parse_expr_loop;  
             default:
-        	    if (!(*e != *in)) 			            	goto has_failed;
-    		    
+        	if (!(*e != *in)) 			            	goto has_failed;
         }
-
 
 
     /* executes when a pattern was not matched when it had to be */
