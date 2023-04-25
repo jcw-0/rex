@@ -37,7 +37,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
     uint8_t flags 	= 0;
     uint8_t modflags 	= 0;
     int match_counter   = 1;
-    char delimiter; delimiter = '/';
+    char delimiter 	= '/';
 
 
     /* parse expression flags, such as modifier flags and mode (match / substitute).
