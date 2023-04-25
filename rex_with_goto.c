@@ -75,7 +75,7 @@ int regex(uint8_t* expression, uint8_t* input, uint8_t* output) {
 	    case '\t':                           			goto parse_expr_loop; 
             case '!': 	     			    negated = !negated; goto p_e_loop_no_input_inc;
 
-            /* handle all expressions inside parentheses as subexpressions,
+            /* handle all expressions inside parentheses as subexpressions
              * parse their content recursively */
             case '(':
         	if (++e == '?')              				goto sbrt;
